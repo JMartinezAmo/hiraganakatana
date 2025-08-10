@@ -1,10 +1,34 @@
+# GitHub Pages Jekyll Configuration
 plugins:
   - jekyll-include-cache
 
+# Include JavaScript modules
 include:
   - js
+  - "*.js"
 
+# Exclude unnecessary files
 exclude:
   - node_modules
   - "*.gemspec"
   - "*.gem"
+  - "README.md"
+  - "CLAUDE.md"
+
+# Ensure proper MIME types for JS modules
+mime_types:
+  application/javascript: [js]
+  text/javascript: [js]
+
+# Markdown settings
+markdown: kramdown
+highlighter: rouge
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+# Site settings
+title: "Japanese Flashcards"
+description: "Learn Japanese Hiragana & Katakana with interactive flashcards"
+url: "https://jmartinezamo.github.io"
+baseurl: "/hiraganakatana"

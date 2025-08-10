@@ -1,0 +1,12 @@
+AddType text/javascript .js
+AddType application/javascript .js
+
+# Enable ES6 modules
+<FilesMatch "\.(js)$">
+  Header set Content-Type "application/javascript"
+</FilesMatch>
+
+# Handle CORS for modules
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type"
