@@ -1,0 +1,10 @@
+plugins:
+  - jekyll-include-cache
+
+include:
+  - js
+
+exclude:
+  - node_modules
+  - "*.gemspec"
+  - "*.gem"
