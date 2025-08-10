@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Flashcards - Hiragana & Katakana</title>
+  <meta name="description" content="Learn Japanese hiragana and katakana characters with interactive flashcards">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1 class="app-title">Japanese Flashcards</h1>
+      <p class="app-subtitle">Master Hiragana & Katakana</p>
+    </header>
+
+    <main class="app-main">
+      <div class="layout-grid">
+        <!-- Mode Selector Section -->
+        <section class="mode-section">
+          <div id="mode-selector" class="component-container">
+            <!-- Mode selector component will be initialized here -->
+          </div>
+        </section>
+
+        <!-- Progress Section -->
+        <section class="progress-section">
+          <div id="progress-container" class="component-container">
+            <!-- Progress component will be initialized here -->
+          </div>
+        </section>
+
+        <!-- Card Section -->
+        <section class="card-section">
+          <div id="card-container" class="component-container">
+            <!-- Card component will be initialized here -->
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="footer-content">
+        <p class="footer-text">
+          Practice Japanese characters with spaced repetition learning.
+        </p>
+        <div class="keyboard-shortcuts">
+          <h4>Keyboard Shortcuts:</h4>
+          <span class="shortcut"><kbd>Space</kbd> Start/Next</span>
+          <span class="shortcut"><kbd>Ctrl+R</kbd> Reset</span>
+          <span class="shortcut"><kbd>Enter</kbd> Check Answer</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- All JavaScript inline to avoid CORS issues -->
+  <script>
+    // Character data
+    const hiraganaData = [
+      // A row (あ段)
+      { character: 'あ', romanji: 'a' },
+      { character: 'い', romanji: 'i' },
+      { character: 'う', romanji: 'u' },
+      { character: 'え', romanji: 'e' },
+      { character: 'お', romanji: 'o' },
+
+      // K row (か段)
+      { character: 'か', romanji: 'ka' },
+      { character: 'き', romanji: 'ki' },
+      { character: 'く', romanji: 'ku' },
+      { character: 'け', romanji: 'ke' },
+      { character: 'こ', romanji: 'ko' },
+
+      // S row (さ段)
+      { character: 'さ', romanji: 'sa' },
+      { character: 'し', romanji: 'shi' },
+      { character: 'す', romanji: 'su' },
+      { character: 'せ', romanji: 'se' },
+      { character: 'そ', romanji: 'so' },
+
+      // T row (た段)
+      { character: 'た', romanji: 'ta' },
+      { character: 'ち', romanji: 'chi' },
+      { character: 'つ', romanji: 'tsu' },
+      { character: 'て', romanji: 'te' },
+      { character: 'と', romanji: 'to' },
+
+      // N row (な段)
+      { character: 'な', romanji: 'na' },
+      { character: 'に', romanji: 'ni' },
+      { character: 'ぬ', romanji: 'nu' },
+      { character: 'ね', romanji: 'ne' },
+      { character: 'の', romanji: 'no' },
+
+      // H row (は段)
+      { character: 'は', romanji: 'ha' },
+      { character: 'ひ', romanji: 'hi' },
+      { character: 'ふ', romanji: 'fu' },
+      { character: 'へ', romanji: 'he' },
+      { character: 'ほ', romanji: 'ho' },
+
+      // M row (ま段)
+      { character: 'ま', romanji: 'ma' },
+      { character: 'み', romanji: 'mi' },
+      { character: 'む', romanji: 'mu' },
+      { character: 'め', romanji: 'me' },
+      { character: 'も', romanji: 'mo' },
+
+      // Y row (や段)
+      { character: 'や', romanji: 'ya' },
+      { character: 'ゆ', romanji: 'yu' },
+      { character: 'よ', romanji: 'yo' },
+
+      // R row (ら段)
+      { character: 'ら', romanji: 'ra' },
+      { character: 'り', romanji: 'ri' },
+      { character: 'る', romanji: 'ru' },
+      { character: 'れ', romanji: 're' },
+      { character: 'ろ', romanji: 'ro' },
+
+      // W row and N (わ段 + ん)
+      { character: 'わ', romanji: 'wa' },
+      { character: 'を', romanji: 'wo' },
+      { character: 'ん', romanji: 'n' }
+    ];
+
+    const katakanaData = [
+      // A row (ア段)
+      { character: 'ア', romanji: 'a' },
+      { character: 'イ', romanji: 'i' },
+      { character: 'ウ', romanji: 'u' },
+      { character: 'エ', romanji: 'e' },
+      { character: 'オ', romanji: 'o' },
+
+      // K row (カ段)
+      { character: 'カ', romanji: 'ka' },
+      { character: 'キ', romanji: 'ki' },
+      { character: 'ク', romanji: 'ku' },
+      { character: 'ケ', romanji: 'ke' },
+      { character: 'コ', romanji: 'ko' },
+
+      // S row (サ段)
+      { character: 'サ', romanji: 'sa' },
+      { character: 'シ', romanji: 'shi' },
+      { character: 'ス', romanji: 'su' },
+      { character: 'セ', romanji: 'se' },
+      { character: 'ソ', romanji: 'so' },
+
+      // T row (タ段)
+      { character: 'タ', romanji: 'ta' },
+      { character: 'チ', romanji: 'chi' },
+      { character: 'ツ', romanji: 'tsu' },
+      { character: 'テ', romanji: 'te' },
+      { character: 'ト', romanji: 'to' },
+
+      // N row (ナ段)
+      { character: 'ナ', romanji: 'na' },
+      { character: 'ニ', romanji: 'ni' },
+      { character: 'ヌ', romanji: 'nu' },
+      { character: 'ネ', romanji: 'ne' },
+      { character: 'ノ', romanji: 'no' },
+
+      // H row (ハ段)
+      { character: 'ハ', romanji: 'ha' },
+      { character: 'ヒ', romanji: 'hi' },
+      { character: 'フ', romanji: 'fu' },
+      { character: 'ヘ', romanji: 'he' },
+      { character: 'ホ', romanji: 'ho' },
+
+      // M row (マ段)
+      { character: 'マ', romanji: 'ma' },
+      { character: 'ミ', romanji: 'mi' },
+      { character: 'ム', romanji: 'mu' },
+      { character: 'メ', romanji: 'me' },
+      { character: 'モ', romanji: 'mo' },
+
+      // Y row (ヤ段)
+      { character: 'ヤ', romanji: 'ya' },
+      { character: 'ユ', romanji: 'yu' },
+      { character: 'ヨ', romanji: 'yo' },
+
+      // R row (ラ段)
+      { character: 'ラ', romanji: 'ra' },
+      { character: 'リ', romanji: 'ri' },
+      { character: 'ル', romanji: 'ru' },
+      { character: 'レ', romanji: 're' },
+      { character: 'ロ', romanji: 'ro' },
+
+      // W row and N (ワ段 + ン)
+      { character: 'ワ', romanji: 'wa' },
+      { character: 'ヲ', romanji: 'wo' },
+      { character: 'ン', romanji: 'n' }
+    ];
+
+    // Character class
+    class Character {
+      constructor(id, character, romanji, type, category) {
+        this.id = id;
+        this.character = character;
+        this.romanji = romanji;
+        this.type = type;
+        this.category = category;
+      }
+
+      checkAnswer(userAnswer) {
+        return userAnswer.toLowerCase().trim() === this.romanji.toLowerCase();
+      }
+    }
+
+    // Process character data
+    function processCharacterData(rawData, type) {
+      return rawData.map((char, index) => {
+        const id = `${type}_${char.romanji}`;
+        return new Character(id, char.character, char.romanji, type, 'basic');
+      });
+    }
+
+    const hiraganaCharacters = processCharacterData(hiraganaData, 'hiragana');
+    const katakanaCharacters = processCharacterData(katakanaData, 'katakana');
+
+    // Get characters by mode
+    function getCharactersByMode(mode) {
+      switch (mode) {
+        case 'hiragana_basic':
+          return hiraganaCharacters;
+        case 'katakana_basic':
+          return katakanaCharacters;
+        default:
+          return hiraganaCharacters;
+      }
+    }
+
+    // Study modes
+    const studyModes = {
+      hiragana_basic: {
+        id: 'hiragana_basic',
+        name: 'Hiragana Basic',
+        description: 'Learn the 46 basic hiragana characters',
+        characterSet: 'hiragana',
+        difficulty: 'beginner',
+        available: true
+      },
+      katakana_basic: {
+        id: 'katakana_basic',
+        name: 'Katakana Basic',
+        description: 'Learn the 46 basic katakana characters',
+        characterSet: 'katakana',
+        difficulty: 'beginner',
+        available: true
+      }
+    };
+
+    function getAvailableModes() {
+      return Object.values(studyModes).filter(mode => mode.available);
+    }
+
+    function getModeById(modeId) {
+      return studyModes[modeId] || null;
+    }
+
+    // Random algorithm
+    class RandomAlgorithm {
+      constructor() {
+        this.name = 'random';
+      }
+
+      selectNext(characters, history = []) {
+        if (!characters || characters.length === 0) {
+          return null;
+        }
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        return characters[randomIndex];
+      }
+    }
+
+    // Study Session
+    class StudySession {
+      constructor(characters, algorithm) {
+        this.characters = characters;
+        this.algorithm = algorithm;
+        this.currentCard = null;
+        this.stats = {
+          correct: 0,
+          incorrect: 0,
+          total: 0,
+          streak: 0,
+          longestStreak: 0
+        };
+        this.history = [];
+        this.startTime = new Date();
+      }
+
+      getNextCharacter() {
+        this.currentCard = this.algorithm.selectNext(this.characters, this.history);
+        return this.currentCard;
+      }
+
+      checkAnswer(userAnswer) {
+        if (!this.currentCard) return null;
+
+        const isCorrect = this.currentCard.checkAnswer(userAnswer);
+        
+        this.stats.total++;
+        if (isCorrect) {
+          this.stats.correct++;
+          this.stats.streak++;
+          if (this.stats.streak > this.stats.longestStreak) {
+            this.stats.longestStreak = this.stats.streak;
+          }
+        } else {
+          this.stats.incorrect++;
+          this.stats.streak = 0;
+        }
+
+        const result = {
+          character: this.currentCard,
+          userAnswer,
+          correct: isCorrect,
+          timestamp: new Date()
+        };
+        this.history.push(result);
+
+        return result;
+      }
+
+      getStats() {
+        const accuracy = this.stats.total > 0 ? (this.stats.correct / this.stats.total) * 100 : 0;
+        const duration = Math.floor((new Date() - this.startTime) / 1000);
+        
+        return {
+          ...this.stats,
+          accuracy: Math.round(accuracy * 100) / 100,
+          duration
+        };
+      }
+    }
+
+    // Main Application
+    class FlashcardApp {
+      constructor() {
+        this.currentSession = null;
+        this.algorithm = new RandomAlgorithm();
+        this.currentMode = null;
+        this.isSessionActive = false;
+        
+        this.init();
+      }
+
+      init() {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', () => this.initializeComponents());
+        } else {
+          this.initializeComponents();
+        }
+      }
+
+      initializeComponents() {
+        this.initModeSelector();
+        this.initCard();
+        this.initProgress();
+        this.setupEventListeners();
+        console.log('Flashcard app initialized');
+      }
+
+      initModeSelector() {
+        const container = document.getElementById('mode-selector');
+        container.innerHTML = `
+          <div class="mode-selector">
+            <h3>Study Mode</h3>
+            <div class="mode-options" id="mode-options"></div>
+            <div class="mode-description" id="mode-description">
+              <p>Select a study mode to begin learning Japanese characters.</p>
+            </div>
+            <div class="mode-actions">
+              <button id="start-session" class="btn btn-primary" disabled>
+                Start Study Session
+              </button>
+            </div>
+          </div>
+        `;
+
+        this.loadModes();
+      }
+
+      loadModes() {
+        const modesContainer = document.getElementById('mode-options');
+        const availableModes = getAvailableModes();
+        
+        modesContainer.innerHTML = '';
+        
+        availableModes.forEach((mode, index) => {
+          const modeElement = document.createElement('div');
+          modeElement.className = 'mode-option';
+          modeElement.innerHTML = `
+            <input type="radio" id="${mode.id}" name="study-mode" value="${mode.id}" ${index === 0 ? 'checked' : ''}>
+            <label for="${mode.id}" class="mode-label">
+              <div class="mode-title">${mode.name}</div>
+              <div class="mode-subtitle">${mode.description}</div>
+              <div class="mode-difficulty difficulty-${mode.difficulty}">${mode.difficulty}</div>
+            </label>
+          `;
+          modesContainer.appendChild(modeElement);
+        });
+        
+        if (availableModes.length > 0) {
+          this.selectMode(availableModes[0].id);
+        }
+      }
+
+      initCard() {
+        const container = document.getElementById('card-container');
+        container.innerHTML = `
+          <div class="card" id="flashcard">
+            <div class="card-inner">
+              <div class="card-front">
+                <div class="character-display" id="character">?</div>
+                <div class="card-prompt">What is this character?</div>
+              </div>
+              <div class="card-back" id="card-back">
+                <div class="answer-section">
+                  <input type="text" id="user-answer" placeholder="Type romanji..." autocomplete="off">
+                  <button id="check-answer" class="btn btn-primary">Check</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="result-section" id="result-section" style="display: none;">
+            <div class="result-message" id="result-message"></div>
+            <div class="correct-answer" id="correct-answer"></div>
+            <button id="next-card" class="btn btn-secondary">Next Card</button>
+          </div>
+        `;
+      }
+
+      initProgress() {
+        const container = document.getElementById('progress-container');
+        container.innerHTML = `
+          <div class="progress-container">
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">Correct</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">Incorrect</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="accuracy">0%</div>
+                <div class="stat-label">Accuracy</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">Streak</div>
+              </div>
+            </div>
+            
+            <div class="session-info">
+              <div class="session-item">
+                <span class="session-label">Time:</span>
+                <span class="session-value" id="session-time">0:00</span>
+              </div>
+              <div class="session-item">
+                <span class="session-label">Best Streak:</span>
+                <span class="session-value" id="best-streak">0</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      setupEventListeners() {
+        // Mode selection
+        document.getElementById('mode-options').addEventListener('change', (e) => {
+          if (e.target.type === 'radio') {
+            this.selectMode(e.target.value);
+          }
+        });
+
+        // Start session
+        document.getElementById('start-session').addEventListener('click', () => {
+          this.startSession();
+        });
+
+        // Check answer
+        document.getElementById('check-answer').addEventListener('click', () => {
+          this.checkAnswer();
+        });
+
+        // Next card
+        document.getElementById('next-card').addEventListener('click', () => {
+          this.nextCard();
+        });
+
+        // Enter key for answer
+        document.getElementById('user-answer').addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            this.checkAnswer();
+          }
+        });
+
+        // Global keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.code === 'Space' && e.target.tagName !== 'INPUT') {
+            e.preventDefault();
+            if (this.isSessionActive) {
+              const resultSection = document.getElementById('result-section');
+              if (resultSection && resultSection.style.display !== 'none') {
+                this.nextCard();
+              }
+            } else {
+              this.startSession();
+            }
+          }
+        });
+      }
+
+      selectMode(modeId) {
+        const mode = getModeById(modeId);
+        if (!mode) return;
+        
+        this.currentMode = mode;
+        
+        const descriptionElement = document.getElementById('mode-description');
+        descriptionElement.innerHTML = `
+          <h4>${mode.name}</h4>
+          <p>${mode.description}</p>
+          <div class="mode-details">
+            <span class="detail-item">Difficulty: <strong>${mode.difficulty}</strong></span>
+            <span class="detail-item">Character Set: <strong>${mode.characterSet}</strong></span>
+          </div>
+        `;
+        
+        document.getElementById('start-session').disabled = false;
+      }
+
+      startSession() {
+        if (!this.currentMode) {
+          console.error('No mode selected');
+          return;
+        }
+
+        console.log('Starting session with mode:', this.currentMode.id);
+        const characters = getCharactersByMode(this.currentMode.id);
+        console.log('Characters loaded:', characters.length);
+        
+        if (!characters || characters.length === 0) {
+          console.error('No characters found for mode:', this.currentMode.id);
+          return;
+        }
+
+        this.currentSession = new StudySession(characters, this.algorithm);
+        this.isSessionActive = true;
+        
+        this.resetProgress();
+        this.nextCard();
+      }
+
+      checkAnswer() {
+        if (!this.currentSession) return;
+
+        const userAnswer = document.getElementById('user-answer').value.trim();
+        const result = this.currentSession.checkAnswer(userAnswer);
+        
+        this.showResult(result.correct, userAnswer);
+        this.updateProgress();
+      }
+
+      showResult(isCorrect, userAnswer) {
+        const resultSection = document.getElementById('result-section');
+        const resultMessage = document.getElementById('result-message');
+        const correctAnswerElement = document.getElementById('correct-answer');
+        
+        document.getElementById('flashcard').style.display = 'none';
+        resultSection.style.display = 'block';
+        
+        if (isCorrect) {
+          resultMessage.textContent = 'Correct! ✅';
+          resultMessage.className = 'result-message correct';
+          correctAnswerElement.style.display = 'none';
+        } else {
+          resultMessage.textContent = 'Incorrect ❌';
+          resultMessage.className = 'result-message incorrect';
+          correctAnswerElement.textContent = `Correct answer: ${this.currentSession.currentCard.romanji}`;
+          correctAnswerElement.style.display = 'block';
+        }
+        
+        document.getElementById('next-card').focus();
+      }
+
+      nextCard() {
+        if (!this.currentSession) {
+          console.error('No active session');
+          this.startSession();
+          return;
+        }
+
+        const nextCharacter = this.currentSession.getNextCharacter();
+        console.log('Next character:', nextCharacter);
+        
+        if (!nextCharacter) {
+          console.error('No next character available');
+          return;
+        }
+
+        // Display the character
+        const characterElement = document.getElementById('character');
+        characterElement.textContent = nextCharacter.character;
+        console.log('Displaying character:', nextCharacter.character, 'for romanji:', nextCharacter.romanji);
+        
+        // Reset card state
+        document.getElementById('user-answer').value = '';
+        document.getElementById('result-section').style.display = 'none';
+        document.getElementById('flashcard').style.display = 'block';
+        
+        // Focus on input
+        setTimeout(() => {
+          document.getElementById('user-answer').focus();
+        }, 100);
+      }
+
+      updateProgress() {
+        const stats = this.currentSession.getStats();
+        
+        document.getElementById('correct-count').textContent = stats.correct;
+        document.getElementById('incorrect-count').textContent = stats.incorrect;
+        document.getElementById('accuracy').textContent = `${stats.accuracy || 0}%`;
+        document.getElementById('streak').textContent = stats.streak;
+        document.getElementById('best-streak').textContent = stats.longestStreak;
+        
+        this.updateTime(stats.duration || 0);
+      }
+
+      updateTime(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        const timeString = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        document.getElementById('session-time').textContent = timeString;
+      }
+
+      resetProgress() {
+        document.getElementById('correct-count').textContent = '0';
+        document.getElementById('incorrect-count').textContent = '0';
+        document.getElementById('accuracy').textContent = '0%';
+        document.getElementById('streak').textContent = '0';
+        document.getElementById('best-streak').textContent = '0';
+        document.getElementById('session-time').textContent = '0:00';
+      }
+    }
+
+    // Initialize the application
+    const app = new FlashcardApp();
+    window.FlashcardApp = app;
+  </script>
+</body>
+</html>
